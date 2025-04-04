@@ -37,10 +37,11 @@ def update(oldX, oldZ):
 
 
 def main():
-	np.random.seed(1)
+	np.random.seed(14)
 
-	m = 50
+	m = 200
 
+	# Plot 5 random partickles
 	for _ in range(5):
 		X0 = np.random.multivariate_normal([0]*6, np.diag([500,5,5,200,5,5])).reshape(6,1)
 		Z0 = np.zeros((5,1))
@@ -60,6 +61,12 @@ def main():
 
 		plt.scatter(X0[0], X0[3])
 		plt.plot(x1s, x2s)
+
+	# Plot stations
+	station_x1 = [0,0,3464.1,3464.1,-3464.1,-3464.1]
+	station_x2 = [4000,-4000,2000,-2000,-2000,2000]
+	plt.scatter(station_x1, station_x2, marker="*")
+
 	plt.axis("off")
 	plt.show()
 
