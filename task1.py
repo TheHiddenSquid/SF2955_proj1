@@ -26,7 +26,7 @@ dc_lookup = np.array([[0, 3.5, 0, 0, -3.5], [0, 0, 3.5, -3.5, 0]])
 
 
 def update(oldX, oldZ):
-	W = np.random.multivariate_normal([0]*2, np.eye(2)).reshape(2,1)
+	W = np.random.multivariate_normal([0]*2, sigma**2 * np.eye(2)).reshape(2,1)
 
 	newX = phi @ oldX + psi_z @ dc_lookup @ oldZ + psi_w @ W
 
