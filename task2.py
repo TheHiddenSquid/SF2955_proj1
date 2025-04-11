@@ -30,7 +30,7 @@ stations_x2 = [4000,-4000,2000,-2000,-2000,2000]
 
 
 def updateX_tilde(oldX, oldZ):
-	W = np.random.multivariate_normal([0]*2, np.eye(2)).reshape(2,1)
+	W = np.random.multivariate_normal([0]*2, sigma**2 * np.eye(2)).reshape(2,1)
 
 	newX = phi @ oldX + psi_z @ dc_lookup @ oldZ + psi_w @ W
 
