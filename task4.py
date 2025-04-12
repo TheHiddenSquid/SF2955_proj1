@@ -111,9 +111,12 @@ def SIS_vec(Ys, num_particles=10000):
         # Redsample particles
         chosen_particles = np.random.choice([*range(num_particles)], size=num_particles, p=weights)
         new_particles_X = np.zeros((6, num_particles))
+        new_particles_Z = np.zeros((5, num_particles))
         for i in range(num_particles):
             new_particles_X[:,i] = particles_X[:,chosen_particles[i]]
+            new_particles_Z[:,i] = particles_Z[:,chosen_particles[i]]
         particles_X = new_particles_X
+        particles_Z = new_particles_Z
 
         particles_X, particles_Z = updateX_tilde_vec(particles_X, particles_Z)
         
