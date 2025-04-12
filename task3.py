@@ -65,6 +65,14 @@ def updateX_tilde_vec(particles_X, particles_Z):
 
     return new_particles_X, new_particles_Z
 
+def calcY(X_tilde):
+    Ys = np.zeros((6,1))
+    for i in range(6):
+        V = np.random.normal(0, 1.5)
+        Ys[i,0] = v - 10*eta*np.log10(np.sqrt((X_tilde[0]-stations_x1[i])**2 + (X_tilde[3]-stations_x2[i])**2)) + V
+	
+    return Ys
+
 def y_given_x_likelihood_vec(particles_X, Y_obs):
     pos1 = particles_X[0, :]
     pos2 = particles_X[3, :]
@@ -112,14 +120,40 @@ def SIS_vec(Ys, num_particles=10000):
     
     return tau1_n, tau2_n
 
+def generate_XY_pair(m):
+    X0 = np.random.multivariate_normal([0]*6, np.diag([500,5,5,200,5,5])).reshape(6,1)
+    Z0 = np.zeros((5,1))
+    Z0[np.random.randint(5)] = 1
+	
+    X = X0.copy()
+    Z = Z0.copy()
+    
+    x1s = [X[0]]
+    x2s = [X[3]]
+
+    Ys = np.zeros((6, m))
+    Ys[:, 0:1] = calcY(X)
+	
+    for j in range(m-1):
+        X, Z = updateX_tilde_vec(X,Z)
+        x1s.append(X[0])
+        x2s.append(X[3])
+        Ys[:,j+1:j+2] = calcY(X)
+
+    return x1s, x2s, Ys
+    
 def main():
-    np.random.seed(13)
+    np.random.seed(11)
+
+    m = 250
+    x1s, x2s, Ys = generate_XY_pair(m)
 
     num_particles = 10000
-    tau1_est, tau2_est = SIS_vec(Ys=Y_test, num_particles=num_particles)
+    tau1_est, tau2_est = SIS_vec(Ys=Ys, num_particles=num_particles)
 
     plt.figure()
     plt.scatter(stations_x1, stations_x2, marker="*", color="C1", label="Stations")
+    plt.plot(x1s, x2s, label="True Trajectory", color="b")
     plt.plot(tau1_est, tau2_est, label="SIS Estimated Trajectory", color="r")
     plt.xlabel("X1 (position)")
     plt.ylabel("X2 (position)")
