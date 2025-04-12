@@ -2,13 +2,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import norm
 
-from tkinter import Tk
-from tkinter.filedialog import askopenfilename
+Y_tmp = []
+with open("RSSI-measurements.txt", "r") as f:
+    for line in f.readlines():
+        Y_tmp.append([float(x) for x in line.strip().split(",")])
 
-Tk().withdraw()
-file_path = askopenfilename(title="Select RSSI-measurements.txt")
-Y_all = np.loadtxt(file_path, delimiter=",")
-print(Y_all.shape)
+Y_all = np.array(Y_tmp)
+
 
 # Setup constants
 dt = 0.5
