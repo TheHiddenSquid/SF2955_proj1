@@ -108,11 +108,18 @@ def SIS_vec(Ys, num_particles=10000):
     tau2_n[0] = np.sum(weights * particles_X[3, :])
     
     for n in range(1, m):
+        # Redsample particles
+        chosen_particles = np.random.choice([*range(num_particles)], size=num_particles, p=weights)
+        new_particles_X = np.zeros((6, num_particles))
+        for i in range(num_particles):
+            new_particles_X[:,i] = particles_X[:,chosen_particles[i]]
+        particles_X = new_particles_X
+
         particles_X, particles_Z = updateX_tilde_vec(particles_X, particles_Z)
         
         # Update weights
         likelihoods = y_given_x_likelihood_vec(particles_X, Ys[:, n:n+1]) # n:n+1 to not flatten
-        weights = weights * likelihoods
+        weights = likelihoods
         weights = weights / np.sum(weights)
         
         tau1_n[n] = np.sum(weights * particles_X[0, :])
@@ -148,13 +155,13 @@ def main():
     m = 250
     x1s, x2s, Ys = generate_XY_pair(m)
 
-    num_particles = 10000
+    num_particles = 10_000
     tau1_est, tau2_est = SIS_vec(Ys=Ys, num_particles=num_particles)
 
     plt.figure()
     plt.scatter(stations_x1, stations_x2, marker="*", color="C1", label="Stations")
     plt.plot(x1s, x2s, label="True Trajectory", color="b")
-    plt.plot(tau1_est, tau2_est, label="SIS Estimated Trajectory", color="r")
+    plt.plot(tau1_est, tau2_est, label="SISR Estimated Trajectory", color="r")
     plt.xlabel("X1 (position)")
     plt.ylabel("X2 (position)")
     plt.legend()
