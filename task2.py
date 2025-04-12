@@ -41,13 +41,10 @@ def updateX_tilde(oldX, oldZ):
 
 
 def calcY(X):
-	station_x1 = [0,0,3464.1,3464.1,-3464.1,-3464.1]
-	station_x2 = [4000,-4000,2000,-2000,-2000,2000]
-
 	Ys = np.zeros((6,1))
 	for i in range(6):
 		V = np.random.normal(0, 1.5)
-		Ys[i,0] = v - 10*eta*np.log10(np.sqrt((X[0]-station_x1[i])**2 + (X[3]-station_x2[i])**2)) + V
+		Ys[i,0] = v - 10*eta*np.log10(np.sqrt((X[0]-stations_x1[i])**2 + (X[3]-stations_x2[i])**2)) + V
 	
 	return Ys
 
