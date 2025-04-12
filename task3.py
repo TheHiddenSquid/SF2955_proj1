@@ -146,14 +146,14 @@ def main():
     np.random.seed(11)
 
     m = 250
-    x1s, x2s, Ys = generate_XY_pair(m)
+    x1s, x2s, Ys_known = generate_XY_pair(m)
 
-    num_particles = 10000
-    tau1_est, tau2_est = SIS_vec(Ys=Ys, num_particles=num_particles)
+    num_particles = 10_000
+    tau1_est, tau2_est = SIS_vec(Ys=Y_test, num_particles=num_particles)     # Swap between Ys_test and Ys_known
 
     plt.figure()
     plt.scatter(stations_x1, stations_x2, marker="*", color="C1", label="Stations")
-    plt.plot(x1s, x2s, label="True Trajectory", color="b")
+    #plt.plot(x1s, x2s, label="True Trajectory", color="b")
     plt.plot(tau1_est, tau2_est, label="SIS Estimated Trajectory", color="r")
     plt.xlabel("X1 (position)")
     plt.ylabel("X2 (position)")

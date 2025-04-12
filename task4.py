@@ -2,11 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import norm
 
-Y_test = []
+Ys_test = []
 with open("RSSI-measurements.txt", "r") as f:
     for line in f.readlines():
-        Y_test.append([float(x) for x in line.strip().split(",")])
-Y_test = np.array(Y_test)
+        Ys_test.append([float(x) for x in line.strip().split(",")])
+Ys_test = np.array(Ys_test)
 
 
 # Setup constants
@@ -156,20 +156,20 @@ def main():
     np.random.seed(11)
 
     m = 250
-    x1s, x2s, Ys = generate_XY_pair(m)
+    x1s, x2s, Ys_known = generate_XY_pair(m)
 
     num_particles = 10_000
-    tau1_est, tau2_est = SIS_vec(Ys=Ys, num_particles=num_particles)
+    tau1_est, tau2_est = SIS_vec(Ys=Ys_test, num_particles=num_particles)    # Swap between Ys_test and Ys_known
 
     plt.figure()
     plt.scatter(stations_x1, stations_x2, marker="*", color="C1", label="Stations")
-    plt.plot(x1s, x2s, label="True Trajectory", color="b")
+    #plt.plot(x1s, x2s, label="True Trajectory", color="b")
     plt.plot(tau1_est, tau2_est, label="SISR Estimated Trajectory", color="r")
     plt.xlabel("X1 (position)")
     plt.ylabel("X2 (position)")
     plt.legend()
     plt.axis("equal")
-    plt.title("SIS Estimated Target Trajectory")
+    plt.title("SISR Estimated Target Trajectory")
     plt.show()
 
 if __name__ == "__main__":
