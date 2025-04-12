@@ -2,12 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import norm
 
-Y_tmp = []
+Y_test = []
 with open("RSSI-measurements.txt", "r") as f:
     for line in f.readlines():
-        Y_tmp.append([float(x) for x in line.strip().split(",")])
-
-Y_all = np.array(Y_tmp)
+        Y_test.append([float(x) for x in line.strip().split(",")])
+Y_test = np.array(Y_test)
 
 
 # Setup constants
@@ -77,7 +76,8 @@ def y_given_x_likelihood_vec(particles_X, Y_obs):
     likelihoods = np.prod(pdf_vals, axis=0)  # shape (N)
     return likelihoods
 
-def SIS_vec(num_particles=10000, m=200):
+def SIS_vec(Ys, num_particles=10000):
+    m = Ys.shape[1]
     particles_X = np.zeros((6, num_particles))
     particles_Z = np.zeros((5, num_particles))
     
@@ -93,7 +93,7 @@ def SIS_vec(num_particles=10000, m=200):
     tau2_n = np.zeros(m)
     
     # initial weights
-    likelihoods = y_given_x_likelihood_vec(particles_X, Y_all[:, 0:1]) # 0:1 to not flatten
+    likelihoods = y_given_x_likelihood_vec(particles_X, Ys[:, 0:1]) # 0:1 to not flatten
     weights = likelihoods / np.sum(likelihoods)
     
     tau1_n[0] = np.sum(weights * particles_X[0, :])
@@ -103,7 +103,7 @@ def SIS_vec(num_particles=10000, m=200):
         particles_X, particles_Z = updateX_tilde_vec(particles_X, particles_Z)
         
         # Update weights
-        likelihoods = y_given_x_likelihood_vec(particles_X, Y_all[:, n:n+1]) # n:n+1 to not flatten
+        likelihoods = y_given_x_likelihood_vec(particles_X, Ys[:, n:n+1]) # n:n+1 to not flatten
         weights = weights * likelihoods
         weights = weights / np.sum(weights)
         
@@ -114,10 +114,9 @@ def SIS_vec(num_particles=10000, m=200):
 
 def main():
     np.random.seed(13)
-    m = 500
 
     num_particles = 10000
-    tau1_est, tau2_est = SIS_vec(num_particles=num_particles, m=m)
+    tau1_est, tau2_est = SIS_vec(Ys=Y_test, num_particles=num_particles)
 
     plt.figure()
     plt.scatter(stations_x1, stations_x2, marker="*", color="C1", label="Stations")
