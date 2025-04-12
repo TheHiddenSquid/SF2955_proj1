@@ -88,21 +88,6 @@ def main():
 	plt.plot(x1s, x2s)
 	plt.axis("off")
 	plt.show()
-
-
-	# SIS algorithm
-	num_samples = 10
-	sample = []
-
-	for _ in range(num_samples):
-		particle = []
-
-		# Sample from initial
-		X0 = np.random.multivariate_normal([0]*6, np.diag([500,5,5,200,5,5])).reshape(6,1)
-		Z0 = np.zeros((5,1))
-		Z0[np.random.randint(5)] = 1
-
-		omega0 = ...
 	
 
 if __name__ == "__main__":
