@@ -84,7 +84,7 @@ def y_given_x_likelihood_vec(particles_X, Y_obs):
     likelihoods = np.prod(pdf_vals, axis=0)  # shape (N)
     return likelihoods
 
-def SIS_vec(Ys, num_particles=10000):
+def SISR_vec(Ys, num_particles=10000):
     m = Ys.shape[1]
     particles_X = np.zeros((6, num_particles))
     particles_Z = np.zeros((5, num_particles))
@@ -159,7 +159,7 @@ def main():
     x1s, x2s, Ys_known = generate_XY_pair(m)
 
     num_particles = 10_000
-    tau1_est, tau2_est = SIS_vec(Ys=Ys_test, num_particles=num_particles)    # Swap between Ys_test and Ys_known
+    tau1_est, tau2_est = SISR_vec(Ys=Ys_test, num_particles=num_particles)    # Swap between Ys_test and Ys_known
 
     plt.figure()
     plt.scatter(stations_x1, stations_x2, marker="*", color="C1", label="Stations")
