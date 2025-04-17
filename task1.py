@@ -58,14 +58,8 @@ def main():
 			x1s.append(X[0])
 			x2s.append(X[3])
 
-
 		plt.scatter(X0[0], X0[3])
 		plt.plot(x1s, x2s)
-
-	# Plot stations
-	station_x1 = [0,0,3464.1,3464.1,-3464.1,-3464.1]
-	station_x2 = [4000,-4000,2000,-2000,-2000,2000]
-	plt.scatter(station_x1, station_x2, marker="*")
 
 	plt.axis("off")
 	plt.show()
