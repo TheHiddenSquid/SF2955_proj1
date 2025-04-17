@@ -77,7 +77,7 @@ def y_given_x_likelihood_vec(particles_X, Y_obs, varsigma):
     likelihoods = np.prod(pdf_vals, axis=0)  # shape (N)
     return likelihoods
 
-def SIS_vec(Ys, varsigma, num_particles=10000):
+def SISR_vec(Ys, varsigma, num_particles=10000):
     m = Ys.shape[1]
     particles_X = np.zeros((6, num_particles))
     particles_Z = np.zeros((5, num_particles))
@@ -133,7 +133,7 @@ def main():
     best_tau2 = None
     best_l = None
     for x in xs:
-        tau1_est, tau2_est, likelihood = SIS_vec(Ys=Ys_test, varsigma = x, num_particles=num_particles)
+        tau1_est, tau2_est, likelihood = SISR_vec(Ys=Ys_test, varsigma = x, num_particles=num_particles)
         ys.append(likelihood)
         if best_l is None or likelihood > best_l:
             best_tau1 = tau1_est
