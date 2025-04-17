@@ -106,7 +106,11 @@ def SIS_vec(Ys, num_particles=10000):
     
     tau1_n[0] = np.sum(weights * particles_X[0, :])
     tau2_n[0] = np.sum(weights * particles_X[3, :])
-    
+
+    CV = num_particles * sum((w/np.sum(weights) - (1/num_particles))**2 for w in weights)
+    effective_sample_size = num_particles / (1+CV)
+    ess = [effective_sample_size]
+
     for n in range(1, m):
         particles_X, particles_Z = updateX_tilde_vec(particles_X, particles_Z)
         
@@ -114,10 +118,44 @@ def SIS_vec(Ys, num_particles=10000):
         likelihoods = y_given_x_likelihood_vec(particles_X, Ys[:, n:n+1]) # n:n+1 to not flatten
         weights = weights * likelihoods
         weights = weights / np.sum(weights)
-        
+
         tau1_n[n] = np.sum(weights * particles_X[0, :])
         tau2_n[n] = np.sum(weights * particles_X[3, :])
+        
+        # Make hists of weights
+        if n == 1:
+            plt.subplot(3,1,1)
+            plt.hist([np.log10(x) for x in weights], bins=25)
+            plt.xlabel("weight (log10)")
+            plt.title("n=1")
+
+        if n == 25:
+            plt.subplot(3,1,2)
+            plt.hist([np.log10(x) for x in weights], bins=25)
+            plt.xlabel("weight (log10)")
+            plt.title("n=25")
+            
+        if n == 50:
+            plt.subplot(3,1,3)
+            plt.hist([np.log10(x) for x in weights], bins=25)
+            plt.xlabel("weight (log10)")
+            plt.title("n=50")
+
+            plt.tight_layout()
+            plt.suptitle("Importance weight distribution")
+            plt.show()
     
+        CV = num_particles * sum((w/np.sum(weights) - (1/num_particles))**2 for w in weights)
+        effective_sample_size = num_particles / (1+CV)
+        ess.append(effective_sample_size)
+    
+    # Make plot of ESS
+    plt.plot(range(m), ess)
+    plt.xlabel("time")
+    plt.ylabel("ESS")
+    plt.title("Effective sample size over time")
+    plt.show()
+
     return tau1_n, tau2_n
 
 def generate_XY_pair(m):
