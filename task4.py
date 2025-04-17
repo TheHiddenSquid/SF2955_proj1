@@ -101,15 +101,14 @@ def SISR_vec(Ys, num_particles=10000):
     tau2_n = np.zeros(m)
     
     # initial weights
-    likelihoods = y_given_x_likelihood_vec(particles_X, Ys[:, 0:1]) # 0:1 to not flatten
-    weights = likelihoods / np.sum(likelihoods)
+    weights = y_given_x_likelihood_vec(particles_X, Ys[:, 0:1]) # 0:1 to not flatten
     
-    tau1_n[0] = np.sum(weights * particles_X[0, :])
-    tau2_n[0] = np.sum(weights * particles_X[3, :])
+    tau1_n[0] = np.sum(weights/np.sum(weights) * particles_X[0, :])
+    tau2_n[0] = np.sum(weights/np.sum(weights) * particles_X[3, :])
     
     for n in range(1, m):
         # Redsample particles
-        chosen_particles = np.random.choice([*range(num_particles)], size=num_particles, p=weights)
+        chosen_particles = np.random.choice([*range(num_particles)], size=num_particles, p=weights / np.sum(weights))
         new_particles_X = np.zeros((6, num_particles))
         new_particles_Z = np.zeros((5, num_particles))
         for i in range(num_particles):
@@ -121,12 +120,10 @@ def SISR_vec(Ys, num_particles=10000):
         particles_X, particles_Z = updateX_tilde_vec(particles_X, particles_Z)
         
         # Update weights
-        likelihoods = y_given_x_likelihood_vec(particles_X, Ys[:, n:n+1]) # n:n+1 to not flatten
-        weights = likelihoods
-        weights = weights / np.sum(weights)
+        weights = y_given_x_likelihood_vec(particles_X, Ys[:, n:n+1]) # n:n+1 to not flatten
         
-        tau1_n[n] = np.sum(weights * particles_X[0, :])
-        tau2_n[n] = np.sum(weights * particles_X[3, :])
+        tau1_n[n] = np.sum(weights/np.sum(weights) * particles_X[0, :])
+        tau2_n[n] = np.sum(weights/np.sum(weights) * particles_X[3, :])
     
     return tau1_n, tau2_n
 
